@@ -1,0 +1,2052 @@
+{
+	"info": {
+		"_postman_id": "8c3c4a50-2ad8-461d-bee1-43b70bca4769",
+		"name": "FinalCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Positive Test",
+			"item": [
+				{
+					"name": "Signup QA",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify response code is 201 when QA signs up\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(201);\r",
+									"});\r",
+									"pm.test(\"Verify success is true when QA signs up\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(true);\r",
+									"});\r",
+									"pm.test(\"Verify registration success message exist when QA signs up\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Registration Success\");\r",
+									"});\r",
+									"pm.test(\"Verify id exist when QA signs up\", function () {\r",
+									"    pm.expect(allData).to.have.property(\"id\");\r",
+									"});\r",
+									"pm.environment.set(\"QAId\", allData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login QA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData=pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify response code is 200 when QA logs in\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(200);\r",
+									"});\r",
+									"pm.test(\"Verify success is true when QA logs in\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(true);\r",
+									"});\r",
+									"pm.test(\"Verify login success message exist when QA logs in\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Login Success\");\r",
+									"});\r",
+									"pm.test(\"Verify token exist when QA logs in\", function () {\r",
+									"    pm.expect(allData).to.have.property(\"token\");\r",
+									"});\r",
+									"pm.environment.set(\"QAToken\", allData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"{{QAEmail}}\",\r\n    \"password\" : \"1234567\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/login",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative test firstName, lastName, email",
+			"item": [
+				{
+					"name": "firstName empty field",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 with no name in the firstName field\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false with no name in the firstName field\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The First Name field is required.\", function () {\r",
+									"    pm.expect(allData.error.firstName).to.be.eql(\"The First Name field is required.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "firstName using null",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 using null\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"    //pm.expect(bodyData.error.firstName).to.be.eql(\"The First Name field is required.\")\r",
+									"});\r",
+									"pm.test(\"Verify success should be false using null\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The First Name field is required.\", function () {\r",
+									"    pm.expect(allData.error.firstName).to.be.eql(\"The First Name field is required.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : null,\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "firstName boundary",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 when out of boundary\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"    //pm.expect(bodyData.error.firstName).to.be.eql(\"The First Name field is required.\")\r",
+									"});\r",
+									"pm.test(\"Verify success should be false when out of boundary\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The First Name field cannot exceed 12 characters in length.\", function () {\r",
+									"    pm.expect(allData.error.firstName).to.be.eql(\"The First Name field cannot exceed 12 characters in length.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"dfhkjsdfhsjdfhdsjfhdsjfhsjfhjkfhdsjj\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "firstName using 2 letters",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 using 2 letters\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false using 2 letters\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The First Name field must be at least 3 characters in length.\", function () {\r",
+									"    pm.expect(allData.error.firstName).to.be.eql(\"The First Name field must be at least 3 characters in length.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"ye\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LastName empty field",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 lastName being empty field\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be lastName being empty field\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The Last Name field is required.\", function () {\r",
+									"    pm.expect(allData.error.lastName).to.be.eql(\"The Last Name field is required.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LastName using null",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 using null\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be using null\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The Last Name field is required.\", function () {\r",
+									"    pm.expect(allData.error.lastName).to.be.eql(\"The Last Name field is required.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : null,\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LastName boundary",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 when out of boundary\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false when out of boundary\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The Last Name field cannot exceed 12 characters in length..\", function () {\r",
+									"    pm.expect(allData.error.lastName).to.be.eql(\"The Last Name field cannot exceed 12 characters in length.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"gjkjdfjgkdfjgkldfjgkdfjgkdfjgkdfjgkldfj\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LastName using 2 letters",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 using 2 letters\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false using 2 letters\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The Last Name field must be at least 3 characters in length.\", function () {\r",
+									"    pm.expect(allData.error.lastName).to.be.eql(\"The Last Name field must be at least 3 characters in length.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"fl\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Email without use @",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 email without @\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false email without @\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The Email-ID field must contain a valid email address.\", function () {\r",
+									"    pm.expect(allData.error.email).to.be.eql(\"The Email-ID field must contain a valid email address.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"sdfjflskfs.com\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Email blank field",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 email blank field\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false email blank field\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads The Email-ID field is required.\", function () {\r",
+									"    pm.expect(allData.error.email).to.be.eql(\"The Email-ID field is required.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Email without using .com",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 without using .com\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false without using .com\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"})\r",
+									"pm.test(\"Verify error message reads The Email-ID field must contain a valid email address.\", function () {\r",
+									"    pm.expect(allData.error.email).to.be.eql(\"The Email-ID field must contain a valid email address.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"dskfj@gmail\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative  test login",
+			"item": [
+				{
+					"name": "Incorrect email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 401 with incorrect email\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(401);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false with incorrect email\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify status Code should be 401 with incorrect email\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(401);\r",
+									"});\r",
+									"pm.test(\"Verify message reads You have entered an incorrect email or student Id.\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"You have entered an incorrect email or student Id.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"dfjdl@aol.com\",\r\n    \"password\" : \"1234567\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/login",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Incorrect password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 401 with incorrect email\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(401);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false with incorrect email\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify status Code should be 401 with incorrect email\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(401);\r",
+									"});\r",
+									"pm.test(\"Verify message reads You have entered an incorrect email or student Id.\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"You have entered an incorrect email or student Id.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"Elvis_Langosh44@gmail.com\",\r\n    \"password\" : \"12345677\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/login",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Blank email & password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 with blank email & password\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success should be false with incorrect email\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error password message reads The Password field is required.\", function () {\r",
+									"    pm.expect(allData.error.password).to.be.eql(\"The Password field is required.\")\r",
+									"});\r",
+									"pm.test(\"Verify error email message reads The Password field is required.\", function () {\r",
+									"    pm.expect(allData.error.email).to.be.eql(\"The Email-ID field is required when ID is not present.\")\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"\",\r\n    \"password\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/login",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative test Get",
+			"item": [
+				{
+					"name": "Find QA  without ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 501 without using student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify status is 501 without using student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify error is 501 without using student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify messages error reads \\\"index\\\" action not implemented.\", function () {\r",
+									"    pm.expect(allData.messages.error).to.be.eql(\"\\\"index\\\" action not implemented.\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative test update",
+			"item": [
+				{
+					"name": "Update without token & student id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 501 without token or student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify message displays 501\", function () {\r",
+									"    pm.expect(allData.status).to.be.eql(501)\r",
+									"});\r",
+									"pm.test(\"Verify messages error displays 501\", function () {\r",
+									"    pm.expect(allData.error).to.be.eql(501)\r",
+									"});\r",
+									"pm.test(\"Verify messages error reads \\\"index\\\" action not implemented.\", function () {\r",
+									"    pm.expect(allData.messages.error).to.be.eql(\"\\\"index\\\" action not implemented.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update with DOB field",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 without gender\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success message is false without gender\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message error reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads Day is required\", function () {\r",
+									"    pm.expect(allData.error.extra_field).to.be.eql(\"Extra fields not allowed. Please check fields list and try again\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads Day is required\", function () {\r",
+									"    pm.expect(allData.error.day).to.be.eql(\"Day is required\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads Month is required\", function () {\r",
+									"    pm.expect(allData.error.month).to.be.eql(\"Month is required\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads Year is required\", function () {\r",
+									"    pm.expect(allData.error.year).to.be.eql(\"Year is required\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{QAToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : \"\",\r\n        \"month\"     : \"\",\r\n        \"day\"       : \"\"\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/{{QAId}}",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{QAId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update without QA id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 501 without using student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify status is 501 without using student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify error is 501 without using student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify messages error reads \\\"index\\\" action not implemented.\", function () {\r",
+									"    pm.expect(allData.messages.error).to.be.eql(\"\\\"index\\\" action not implemented.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{QAToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update with blank firstName, lastName, email",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 without gender\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success message is false without gender\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message error reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads Day is required\", function () {\r",
+									"    pm.expect(allData.error.extra_field).to.be.eql(\"Extra fields not allowed. Please check fields list and try again\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads First Name field is required\", function () {\r",
+									"    pm.expect(allData.error.firstName).to.be.eql(\"First Name field is required\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads Last Name is required\", function () {\r",
+									"    pm.expect(allData.error.lastName).to.be.eql(\"Last Name is required\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads Email-ID is required\", function () {\r",
+									"    pm.expect(allData.error.email).to.be.eql(\"Email-ID is required\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{QAToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"\",\r\n    \"lastName\" : \"\",\r\n    \"email\"     : \"\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/{{QAId}}",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{QAId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update with 1 letter in gender field",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 400 without gender\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(400);\r",
+									"});\r",
+									"pm.test(\"Verify success message is false without gender\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(false);\r",
+									"});\r",
+									"pm.test(\"Verify message error reads Validation Errors\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Validation Errors\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads Gender is required\", function () {\r",
+									"    pm.expect(allData.error.extra_field).to.be.eql(\"Extra fields not allowed. Please check fields list and try again\")\r",
+									"});\r",
+									"pm.test(\"Verify error message reads Gender is required\", function () {\r",
+									"    pm.expect(allData.error.gender).to.be.eql(\"Gender field is must be 'male' or 'female'\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{QAToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"g\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/{{QAId}}",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{QAId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative test Delete",
+			"item": [
+				{
+					"name": "Delete QA without student ID & token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 501 without using student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify status is 501 without using student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify error is 501 without using student id\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(501);\r",
+									"});\r",
+									"pm.test(\"Verify messages error reads \\\"index\\\" action not implemented.\", function () {\r",
+									"    pm.expect(allData.messages.error).to.be.eql(\"\\\"index\\\" action not implemented.\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete QA without using Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify Response Code should be 401 without token\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(401);\r",
+									"});\r",
+									"pm.test(\"Verify message reads Unauthorized\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Unauthorized\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/{{QAId}}",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{QAId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Positive Test",
+			"item": [
+				{
+					"name": "Signup QA Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData= pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify response code is 201 when QA signs up\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(201);\r",
+									"});\r",
+									"pm.test(\"Verify success is true when QA signs up\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(true);\r",
+									"});\r",
+									"pm.test(\"Verify registration success message exist when QA signs up\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Registration Success\");\r",
+									"});\r",
+									"pm.test(\"Verify id exist when QA signs up\", function () {\r",
+									"    pm.expect(allData).to.have.property(\"id\");\r",
+									"});\r",
+									"pm.environment.set(\"QAId\", allData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"password\"  : \"1234567\",\r\n    \"confirmPassword\"  : \"1234567\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/signup",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login QA Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData=pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify response code is 200 when QA logs in\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(200);\r",
+									"});\r",
+									"pm.test(\"Verify success is true when QA logs in\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(true);\r",
+									"});\r",
+									"pm.test(\"Verify login success message exist when QA logs in\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Login Success\");\r",
+									"});\r",
+									"pm.test(\"Verify token exist when QA logs in\", function () {\r",
+									"    pm.expect(allData).to.have.property(\"token\");\r",
+									"});\r",
+									"pm.environment.set(\"QAToken\", allData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"{{QAEmail}}\",\r\n    \"password\" : \"1234567\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/login",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update QA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData=pm.response.json();\r",
+									"pm.test(\"Verify response code is 200 when QA updates profile\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(200);\r",
+									"});\r",
+									"pm.test(\"Verify success is true when QA updates profile\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(true);\r",
+									"});\r",
+									"pm.test(\"Verify upate success message exist when QA updates profile\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Update success\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"QAFirstName\",pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"QALastName\",pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"const email= pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.environment.set(\"QAEmail\", email);\r",
+									"pm.environment.set(\"QAdob_year\",_.random(1935, 2013));\r",
+									"pm.environment.set(\"QAdob_month\",_.random(1, 12));\r",
+									"pm.environment.set(\"QAdob_day\",_.random(1, 31));\r",
+									"const genderList=[\"male\", \"female\"];\r",
+									"const gender=Math.floor(Math.random()*genderList.length);\r",
+									"pm.environment.set(\"QAGender\", genderList[gender]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{QAToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"{{QAFirstName}}\",\r\n    \"lastName\" : \"{{QALastName}}\",\r\n    \"email\"     : \"{{QAEmail}}\",\r\n    \"dob\"       : {\r\n        \"year\"      : {{QAdob_year}},\r\n        \"month\"     : {{QAdob_month}},\r\n        \"day\"       : {{QAdob_day}}\r\n    },\r\n    \"gender\"    : \"{{QAGender}}\",\r\n    \"agree\"     : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/{{QAId}}",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{QAId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChangePassword",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData = pm.response.json();\r",
+									"pm.test(\"Verify response code is 200 when QA changes password\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(200);\r",
+									"});\r",
+									"pm.test(\"Verify success message is true when QA changes password\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(true);\r",
+									"});\r",
+									"pm.test(\"Verify password update success message exist when QA changes password\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Password update success\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{QAToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\"  : \"karim12345\",\r\n    \"confirmPassword\"  : \"karim12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/updatePassword/{{QAId}}",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"updatePassword",
+								"{{QAId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find QA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData=pm.response.json();\r",
+									"pm.test(\"Verify response code is 200 when QA is found\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(200);\r",
+									"});\r",
+									"pm.test(\"Verify status message is 200 when QA is found\", function () {\r",
+									"    pm.expect(allData.status).to.be.eql(200);\r",
+									"});\r",
+									"pm.test(\"Verify student found message exist when QA is found\", function () {\r",
+									"    pm.expect(allData.message).to.be.eql(\"Student Found\");\r",
+									"});\r",
+									"pm.test(\"Verify first name is present in QA info and is a string\", function () {\r",
+									"    pm.expect(allData.data).to.have.property('firstName').to.be.a('string').to.be.eql(environment.QAFirstName);\r",
+									"});\r",
+									"pm.test(\"Verify last name is present in QA info and is a string\", function () {\r",
+									"    pm.expect(allData.data).to.have.property('lastName').to.be.a('string').to.be.eql(environment.QALastName);\r",
+									"});\r",
+									"pm.test(\"Verify studentId is present in QA info and is a string\", function () {\r",
+									"    pm.expect(allData.data).to.have.property('studentId').to.be.a('string').to.be.eql(environment.QAId);\r",
+									"});\r",
+									"pm.test(\"Verify email is present in QA info and is a string\", function () {\r",
+									"    pm.expect(allData.data).to.have.property('email').to.be.a('string').to.be.eql(environment.QAEmail);\r",
+									"});\r",
+									"pm.test(\"Verify gender is present in QA info and is a string\", function () {\r",
+									"    pm.expect(allData.data).to.have.property('gender').to.be.a('string').to.be.eql(environment.QAGender);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/{{QAId}}",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{QAId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete QA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const allData=pm.response.json();\r",
+									"pm.test(\"Verify response code is 200 when QA is deleted\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.eql(200);\r",
+									"});\r",
+									"pm.test(\"Verify success message is true when QA is deleted\", function () {\r",
+									"    pm.expect(allData.success).to.be.eql(true);\r",
+									"});\r",
+									"pm.test(\"Verify data deleted message exist when QA is deleted\", function () {\r",
+									"    pm.expect(allData.messages).to.be.eql(\"Data Deleted\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{QAToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{asitisURL}}/api/student/{{QAId}}",
+							"host": [
+								"{{asitisURL}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{QAId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
